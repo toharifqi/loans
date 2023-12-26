@@ -1,5 +1,6 @@
 package com.exercise.loans.entity
 
+import com.exercise.loans.dto.Loan
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.GeneratedValue
@@ -45,4 +46,13 @@ data class LoanEntity(
 
     @LastModifiedBy
     override var updatedBy: String? = null,
-) : BaseEntity
+) : BaseEntity {
+    constructor(loan: Loan) : this(
+        mobileNumber = loan.mobileNumber,
+        loanNumber = loan.loanNumber,
+        loanType = loan.loanType,
+        totalLoan = loan.totalLoan,
+        amountPaid = loan.amountPaid,
+        outstandingAmount = loan.outstandingAmount,
+    )
+}
