@@ -2,8 +2,14 @@ package com.exercise.loans.controller
 
 import com.exercise.loans.dto.Response
 import com.exercise.loans.constant.LoanConstant
+import com.exercise.loans.dto.ErrorResponse
 import com.exercise.loans.dto.Loan
 import com.exercise.loans.service.LoanService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
@@ -30,10 +36,27 @@ import org.springframework.web.bind.annotation.RestController
 class LoanController(
     private val loanService: LoanService
 ) {
-    
+
+    @Operation(
+        summary = "Create Loan REST API",
+        description = "REST API to create new loan inside X Bank"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "201",
+            description = "HTTP Status CREATED"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
     @PostMapping("/create")
     fun create(
-        @RequestParam 
+        @RequestParam
         @Pattern(regexp = "(^$|[0-9]{12})", message = "Mobile Number must be 12 digits of number")
         mobileNumber: String
     ): ResponseEntity<Response> {
@@ -47,7 +70,24 @@ class LoanController(
                 )
             )
     }
-    
+
+    @Operation(
+        summary = "Fetch Loan Details REST API",
+        description = "REST API to fetch loan details based on a mobile number"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
     @GetMapping("/fetch")
     fun fetch(
         @RequestParam
@@ -59,11 +99,32 @@ class LoanController(
             .status(HttpStatus.OK)
             .body(loan)
     }
-    
+
+    @Operation(
+        summary = "Update Loan Details REST API",
+        description = "REST API to update loan details based on a loan number"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+        ),
+        ApiResponse(
+            responseCode = "417",
+            description = "Expectation Failed"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
     @PutMapping("/update")
     fun update(@RequestBody @Valid loan: Loan): ResponseEntity<Response> {
         val isUpdated = loanService.updateLoan(loan)
-        
+
         return if (isUpdated) {
             ResponseEntity
                 .status(HttpStatus.OK)
@@ -84,7 +145,28 @@ class LoanController(
                 )
         }
     }
-    
+
+    @Operation(
+        summary = "Delete Loan Details REST API",
+        description = "REST API to delete Loan details based on a mobile number"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+        ),
+        ApiResponse(
+            responseCode = "417",
+            description = "Expectation Failed"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
     @DeleteMapping("/delete")
     fun delete(
         @RequestParam
@@ -112,5 +194,4 @@ class LoanController(
                 )
         }
     }
-    
 }
