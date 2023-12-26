@@ -1,7 +1,6 @@
-package com.exercise.accounts.exception
+package com.exercise.loans.exception
 
-import com.exercise.accounts.dto.ErrorResponse
-import com.exercise.loans.exception.LoanAlreadyExistException
+import com.exercise.loans.dto.ErrorResponse
 import org.springframework.context.support.DefaultMessageSourceResolvable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus

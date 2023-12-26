@@ -1,4 +1,4 @@
-package com.exercise.accounts.dto
+package com.exercise.loans.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.http.HttpStatus

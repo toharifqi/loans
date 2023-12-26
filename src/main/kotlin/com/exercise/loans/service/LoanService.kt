@@ -1,6 +1,6 @@
 package com.exercise.loans.service
 
-import com.exercise.accounts.exception.ResourceNotFoundException
+import com.exercise.loans.exception.ResourceNotFoundException
 import com.exercise.loans.constant.LoanConstant
 import com.exercise.loans.dto.Loan
 import com.exercise.loans.entity.LoanEntity
@@ -10,20 +10,20 @@ import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 interface LoanService {
-    fun create(mobileNumber: String)
+    fun createLoan(mobileNumber: String)
     
-    fun fetch(mobileNumber: String): Loan
+    fun fetchLoanInfo(mobileNumber: String): Loan
     
-    fun update(loan: Loan): Boolean
+    fun updateLoan(loan: Loan): Boolean
     
-    fun delete(mobileNumber: String): Boolean
+    fun deleteLoan(mobileNumber: String): Boolean
 }
 
 @Service
 class LoanServiceImpl(
     private val loanRepository: LoanRepository
 ) : LoanService {
-    override fun create(mobileNumber: String) {
+    override fun createLoan(mobileNumber: String) {
         checkIfLoanAlreadyExist(mobileNumber)
         loanRepository.save(generateLoan(mobileNumber))
     }
@@ -47,7 +47,7 @@ class LoanServiceImpl(
         )
     }
 
-    override fun fetch(mobileNumber: String): Loan {
+    override fun fetchLoanInfo(mobileNumber: String): Loan {
         val loanEntity = loanRepository.findByMobileNumber(mobileNumber).orElseThrow {
             ResourceNotFoundException("Loan", "mobileNumber", mobileNumber)
         }
@@ -55,17 +55,23 @@ class LoanServiceImpl(
         return Loan(loanEntity)
     }
 
-    override fun update(loan: Loan): Boolean {
-        val loanEntity = loanRepository.findByMobileNumber(loan.mobileNumber).orElseThrow {
+    override fun updateLoan(loan: Loan): Boolean {
+        val updatedLoanEntity = loanRepository.findByMobileNumber(loan.mobileNumber).orElseThrow {
             ResourceNotFoundException("Loan", "mobileNumber", loan.mobileNumber)
-        }
+        }.copy(
+            mobileNumber = loan.mobileNumber,
+            loanNumber = loan.loanNumber,
+            loanType = loan.loanType,
+            totalLoan = loan.totalLoan,
+            amountPaid = loan.amountPaid,
+            outstandingAmount = loan.outstandingAmount,
+        )
         
-        val updatedLoan = LoanEntity(loan)
-        loanRepository.save(updatedLoan)
+        loanRepository.save(updatedLoanEntity)
         return true
     }
 
-    override fun delete(mobileNumber: String): Boolean {
+    override fun deleteLoan(mobileNumber: String): Boolean {
         val loanEntity = loanRepository.findByMobileNumber(mobileNumber).orElseThrow {
             ResourceNotFoundException("Loan", "mobileNumber", mobileNumber)
         }
