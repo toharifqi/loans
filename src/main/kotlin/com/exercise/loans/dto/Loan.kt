@@ -1,24 +1,26 @@
 package com.exercise.loans.dto
 
+import com.exercise.loans.entity.LoanEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.PositiveOrZero
 
-@Schema(name = "Loans",
+@Schema(
+    name = "Loans",
     description = "Schema to hold Loan information"
 )
 data class Loan(
     @field:NotEmpty(message = "Mobile Number can not be a null or empty")
-    @field:Pattern(regexp="(^$|[0-9]{10})",message = "Mobile Number must be 10 digits")
+    @field:Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number must be 10 digits")
     @Schema(
         description = "Mobile Number of Customer", example = "4365327698"
     )
     var mobileNumber: String,
 
     @field:NotEmpty(message = "Loan Number can not be a null or empty")
-    @field:Pattern(regexp="(^$|[0-9]{12})",message = "LoanNumber must be 12 digits")
+    @field:Pattern(regexp = "(^$|[0-9]{12})", message = "LoanNumber must be 12 digits")
     @Schema(
         description = "Loan Number of the customer", example = "548732457654"
     )
@@ -47,4 +49,13 @@ data class Loan(
         description = "Total outstanding amount against a loan", example = "99000"
     )
     var outstandingAmount: Int,
-)
+) {
+    constructor(loanEntity: LoanEntity) : this(
+        mobileNumber = loanEntity.mobileNumber,
+        loanNumber = loanEntity.loanNumber,
+        loanType = loanEntity.loanType,
+        totalLoan = loanEntity.totalLoan,
+        amountPaid = loanEntity.amountPaid,
+        outstandingAmount = loanEntity.outstandingAmount,
+    )
+}
