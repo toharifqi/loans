@@ -21,7 +21,7 @@ build:
   version: "3.0"
 
 loans:
-  message: "Welcome to XBank accounts cards local APIs"
+  message: "Welcome to XBank accounts loans local APIs"
   contactDetails:
     name: "Amaal Grega - Developer"
     email: "amaal@xbank.com"
