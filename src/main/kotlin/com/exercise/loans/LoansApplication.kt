@@ -1,10 +1,12 @@
 package com.exercise.loans
 
+import com.exercise.loans.dto.ProjectContactInfo
 import io.swagger.v3.oas.annotations.ExternalDocumentation
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
@@ -26,6 +28,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 )
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
+@EnableConfigurationProperties(value = [ProjectContactInfo::class])
 class LoansApplication
 
 fun main(args: Array<String>) {

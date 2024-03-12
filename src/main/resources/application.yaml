@@ -14,3 +14,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  profiles:
+    active: "local"
+
+build:
+  version: "3.0"
+
+loans:
+  message: "Welcome to XBank accounts cards local APIs"
+  contactDetails:
+    name: "Amaal Grega - Developer"
+    email: "amaal@xbank.com"
+  onCallSupport:
+    - (+62) 855-2222-3333
+    - (+62) 837-4324-7868

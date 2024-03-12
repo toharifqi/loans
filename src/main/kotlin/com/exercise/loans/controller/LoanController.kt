@@ -4,6 +4,7 @@ import com.exercise.loans.dto.Response
 import com.exercise.loans.constant.LoanConstant
 import com.exercise.loans.dto.ErrorResponse
 import com.exercise.loans.dto.Loan
+import com.exercise.loans.dto.ProjectContactInfo
 import com.exercise.loans.service.LoanService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Pattern
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -34,9 +37,14 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = ["/api"], produces = [MediaType.APPLICATION_JSON_VALUE])
 @Validated
 class LoanController(
-    private val loanService: LoanService
+    private val loanService: LoanService,
+    private val environment: Environment,
+    private val projectContactInfo: ProjectContactInfo,
 ) {
 
+    @Value("\${build.version}")
+    val buildVersion: String? = null
+    
     @Operation(
         summary = "Create Loan REST API",
         description = "REST API to create new loan inside X Bank"
@@ -193,5 +201,71 @@ class LoanController(
                     )
                 )
         }
+    }
+
+    @Operation(
+        summary = "Get Build Information",
+        description = "Get Build information that is deployed into cards microservice"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
+    @GetMapping("/build-info")
+    fun getBuildInfo(): ResponseEntity<String> {
+        return ResponseEntity.status(HttpStatus.OK).body(buildVersion)
+    }
+
+    @Operation(
+        summary = "Get Java version",
+        description = "Get Java version that is installed into cards microservice"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
+    @GetMapping("/java-version")
+    fun getJavaVersion(): ResponseEntity<String> {
+        return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME") ?: "null, need permission")
+    }
+
+    @Operation(
+        summary = "Get Contact Info",
+        description = "Contact Info details that can be reached out in case of any issues"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+        ),
+        ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = [Content(
+                schema = Schema(implementation = ErrorResponse::class)
+            )]
+        )
+    )
+    @GetMapping("/contact-info")
+    fun getContactInfo(): ResponseEntity<ProjectContactInfo> {
+        return ResponseEntity.status(HttpStatus.OK).body(projectContactInfo)
     }
 }
